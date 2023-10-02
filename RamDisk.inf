@@ -1,0 +1,28 @@
+##
+#
+# RamDisk.inf
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010006
+  BASE_NAME                      = RamDisk
+  FILE_GUID                      = fe062519-a707-4344-bbb4-d54a58b72e25
+  MODULE_TYPE                    = UEFI_APPLICATION
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = ShellCEntryLib
+
+[Sources]
+  RamDisk.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ShellPkg/ShellPkg.dec
+
+[LibraryClasses]
+  UefiLib
+  ShellCEntryLib
+  ShellLib
+
+[Protocols]
+  gEfiRamDiskProtocolGuid
