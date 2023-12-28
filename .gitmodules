@@ -1,0 +1,3 @@
+[submodule "CmdLineLib"]
+	path = CmdLineLib
+	url = git@github.com:davepet1234/CmdLineLib.git

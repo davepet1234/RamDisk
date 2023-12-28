@@ -14,7 +14,10 @@
 
 [Sources]
   RamDisk.c
-
+  CmdLineLib/CmdLine.c
+  CmdLineLib/CmdLine.h
+  CmdLineLib/CmdLineInternal.h
+  
 [Packages]
   MdePkg/MdePkg.dec
   ShellPkg/ShellPkg.dec

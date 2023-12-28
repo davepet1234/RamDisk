@@ -12,6 +12,19 @@
 #include <Library/UefiBootServicesTableLib.h>
 #include <Protocol/RamDisk.h>
 #include <Protocol/DevicePathToText.h>
+#include "CmdLineLib/CmdLine.h"
+
+// Parameter variables
+#define STR_MAXSIZE 20
+CHAR16  Filename[STR_MAXSIZE];
+
+// Main program help
+CHAR16 ProgHelpStr[]    = L"Create or Load RAM disk";
+
+// Switch table
+SWTABLE_START(SwitchTable)
+SWTABLE_MAN_STR(    L"-l",  L"-load",       Filename, STR_MAXSIZE,   L"[filename]Disk image filename")
+SWTABLE_END
 
 INTN
 EFIAPI
@@ -27,8 +40,19 @@ ShellAppMain (
     EFI_FILE_HANDLE          FileHandle;
     EFI_FILE_INFO            *FileInfo;  
     UINTN                    ReadSize; 
-  
-     Print(L"RamDisk application\n");
+
+    SHELL_STATUS ShellStatus = SHELL_SUCCESS;
+
+    Filename[0] = '\0'        ;
+
+    // Parse the command line 
+    ShellStatus = ParseCmdLine(NULL, 0,SwitchTable, ProgHelpStr, NO_OPT, NULL);
+    if (ShellStatus == SHELL_ABORTED){
+        return ShellStatus;
+    }
+
+    Print(L"RamDisk application\n");
+    Print(L"Filename: \"%s\"\n", Filename);
      
     // Look for Ram Disk Protocol
     Status = gBS->LocateProtocol(&gEfiRamDiskProtocolGuid, NULL, (VOID **)&MyRamDisk);
@@ -38,7 +62,7 @@ ShellAppMain (
     }
 
     //Open Image file and load it to the memory
-    Status = ShellOpenFileByName(L"Disk.img", (SHELL_FILE_HANDLE *)&FileHandle, EFI_FILE_MODE_READ, 0);
+    Status = ShellOpenFileByName(Filename, (SHELL_FILE_HANDLE *)&FileHandle, EFI_FILE_MODE_READ, 0);
     if(EFI_ERROR (Status)) {
         Print(L"ERROR: OpenFile failed! Error=[%r]\n",Status);
         return EFI_SUCCESS;
@@ -81,6 +105,7 @@ ShellAppMain (
     if(TextDevicePath) {
         gBS->FreePool(TextDevicePath);
     }
+
     SHELL_FREE_NON_NULL(FileInfo);
     
     Print(L"Created Ram Disk success!\n");
